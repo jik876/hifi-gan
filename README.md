@@ -7,10 +7,10 @@ we proposed HiFi-GAN: a GAN-based model capable of generating high fidelity spee
 We provide our implementation and pretrained models as open source in this repository.
 
 **Abstract :**
-Several recent studies on speech synthesis have employed generative adversarial networks (GANs) to produce raw waveforms. 
+Several recent work on speech synthesis have employed generative adversarial networks (GANs) to produce raw waveforms. 
 Although such methods improve the sampling efficiency and memory usage, 
 their sample quality has not yet reached that of autoregressive and flow-based generative models. 
-In this study, we propose HiFi-GAN, which achieves both efficient and high-fidelity speech synthesis. 
+In this work, we propose HiFi-GAN, which achieves both efficient and high-fidelity speech synthesis. 
 As speech audio consists of sinusoidal signals with various periods, 
 we demonstrate that modeling periodic patterns of an audio is crucial for enhancing sample quality. 
 A subjective human evaluation (mean opinion score, MOS) of a single speaker dataset indicates that our proposed method 
