@@ -55,6 +55,7 @@ Details of each folder are as in follows:
 |VCTK_V1|V1|VCTK|No|
 |VCTK_V2|V2|VCTK|No|
 |VCTK_V3|V3|VCTK|No|
+|UNIVERSAL_V1|V1|Universal|No|
 
 
 ## Inference from wav file
