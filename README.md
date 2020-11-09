@@ -38,6 +38,8 @@ To train V2 or V3 Generator, replace `config_v1.json` with `config_v2.json` or `
 Checkpoints and copy of the configuration file are saved in `cp_hifigan` directory by default.<br>
 You can change the path by adding `--checkpoint_path` option.
 
+Validation loss during training with V1 generator.<br>
+![validation loss](./validation_loss.png)
 
 ## Pretrained Model
 You can also use pretrained models we provide.<br/>

@@ -113,14 +113,13 @@ def train(rank, a, h):
         for i, batch in enumerate(train_loader):
             if rank == 0:
                 start_b = time.time()
-            x, y, _, mel_spec = batch
+            x, y, _, y_mel = batch
             x = torch.autograd.Variable(x.to(device, non_blocking=True))
             y = torch.autograd.Variable(y.to(device, non_blocking=True))
-            mel_spec = torch.autograd.Variable(mel_spec.to(device, non_blocking=True))
+            y_mel = torch.autograd.Variable(y_mel.to(device, non_blocking=True))
             y = y.unsqueeze(1)
 
             y_g_hat = generator(x)
-            y_mel = mel_spec
             y_g_hat_mel = mel_spectrogram(y_g_hat.squeeze(1), h.n_fft, h.num_mels, h.sampling_rate, h.hop_size, h.win_size,
                                           h.fmin, h.fmax_for_loss)
 
@@ -188,23 +187,32 @@ def train(rank, a, h):
                 if steps % a.validation_interval == 0:  # and steps != 0:
                     generator.eval()
                     torch.cuda.empty_cache()
+                    val_err_tot = 0
                     with torch.no_grad():
-                        for i, batch in enumerate(validation_loader):
-                            x, y, _, _ = batch
+                        for j, batch in enumerate(validation_loader):
+                            x, y, _, y_mel = batch
                             y_g_hat = generator(x.to(device))
+                            y_mel = torch.autograd.Variable(y_mel.to(device, non_blocking=True))
+                            y_g_hat_mel = mel_spectrogram(y_g_hat.squeeze(1), h.n_fft, h.num_mels, h.sampling_rate,
+                                                          h.hop_size, h.win_size,
+                                                          h.fmin, h.fmax_for_loss)
+                            val_err_tot += F.l1_loss(y_mel, y_g_hat_mel).item()
 
-                            if steps == 0:
-                                sw.add_audio('gt/y_{}'.format(i), y[0], steps, h.sampling_rate)
-                                sw.add_figure('gt/y_spec_{}'.format(i), plot_spectrogram(x[0]), steps)
+                            if j <= 4:
+                                if steps == 0:
+                                    sw.add_audio('gt/y_{}'.format(j), y[0], steps, h.sampling_rate)
+                                    sw.add_figure('gt/y_spec_{}'.format(j), plot_spectrogram(x[0]), steps)
 
-                            sw.add_audio('generated/y_hat_{}'.format(i), y_g_hat[0], steps, h.sampling_rate)
-                            y_hat_spec = mel_spectrogram(y_g_hat.squeeze(1), h.n_fft, h.num_mels,
-                                                         h.sampling_rate, h.hop_size, h.win_size,
-                                                         h.fmin, h.fmax)
-                            sw.add_figure('generated/y_hat_spec_{}'.format(i),
-                                          plot_spectrogram(y_hat_spec.squeeze(0).cpu().numpy()), steps)
-                            if i == 4:
-                                break
+                                sw.add_audio('generated/y_hat_{}'.format(j), y_g_hat[0], steps, h.sampling_rate)
+                                y_hat_spec = mel_spectrogram(y_g_hat.squeeze(1), h.n_fft, h.num_mels,
+                                                             h.sampling_rate, h.hop_size, h.win_size,
+                                                             h.fmin, h.fmax)
+                                sw.add_figure('generated/y_hat_spec_{}'.format(j),
+                                              plot_spectrogram(y_hat_spec.squeeze(0).cpu().numpy()), steps)
+
+                        val_err = val_err_tot / (j+1)
+                        sw.add_scalar("validation/mel_spec_error", val_err, steps)
+
                     generator.train()
 
             steps += 1
