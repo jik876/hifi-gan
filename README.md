@@ -58,7 +58,7 @@ Details of each folder are as in follows:
 |VCTK_V2|V2|VCTK|No|
 |VCTK_V3|V3|VCTK|No|
 |UNIVERSAL_V1|V1|Universal|No|
-
+We provide the universal model with discriminator weights that can be used as a base for transfer learning to other datasets.
 
 ## Fine-Tuning
 1. Generate mel-spectrograms in numpy format using [Tacotron2](https://github.com/NVIDIA/tacotron2) with teacher-forcing.<br/>
