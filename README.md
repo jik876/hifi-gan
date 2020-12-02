@@ -59,7 +59,6 @@ Details of each folder are as in follows:
 |VCTK_V3|V3|VCTK|No|
 |UNIVERSAL_V1|V1|Universal|No|
 
-We provide the universal model with discriminator weights that can be used as a base for transfer learning to other datasets.
 
 ## Fine-Tuning
 1. Generate mel-spectrograms in numpy format using [Tacotron2](https://github.com/NVIDIA/tacotron2) with teacher-forcing.<br/>
@@ -86,6 +85,7 @@ Example:
 Generated wav files are saved in `generated_files` by default.<br>
 You can change the path by adding `--output_dir` option.
 
+Extra Note for user given audio:wav,is mono,22050khz.
 
 ## Inference for end-to-end speech synthesis
 1. Make `test_mel_files` directory and copy generated mel-spectrogram files into the directory.<br>
