@@ -78,7 +78,7 @@ class Generator(torch.nn.Module):
         self.h = h
         self.num_kernels = len(h.resblock_kernel_sizes)
         self.num_upsamples = len(h.upsample_rates)
-        self.conv_pre = weight_norm(Conv1d(80, h.upsample_initial_channel, 7, 1, padding=3))
+        self.conv_pre = weight_norm(Conv1d(h.num_mels, h.upsample_initial_channel, 7, 1, padding=3))
         resblock = ResBlock1 if h.resblock == '1' else ResBlock2
 
         self.ups = nn.ModuleList()
