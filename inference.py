@@ -6,9 +6,9 @@ import argparse
 import json
 import torch
 from scipy.io.wavfile import write
-from env import AttrDict
-from meldataset import mel_spectrogram, MAX_WAV_VALUE, load_wav
-from models import Generator
+from .env import AttrDict
+from .meldataset import mel_spectrogram, MAX_WAV_VALUE, load_wav
+from .models import Generator
 
 h = None
 device = None
