@@ -56,3 +56,26 @@ def scan_checkpoint(cp_dir, prefix):
         return None
     return sorted(cp_list)[-1]
 
+def apply_mask(op, x, valid_lengths):
+    if op._get_name() == 'Conv1d':
+        kernel_size = op.kernel_size[0]
+        stride = op.stride[0]
+        padding = op.padding[0]
+        dilation = op.dilation[0] 
+        output_length = []
+        for i, length in enumerate(valid_lengths):
+            output_length.append((length + 2 * padding - (kernel_size - 1) * dilation - 1) // stride + 1)
+            x[i, :, output_length[i]:] = 0
+    elif op._get_name() == 'ConvTranspose1d':
+        kernel_size = op.kernel_size[0]
+        stride = op.stride[0]
+        padding = op.padding[0]
+        dilation = op.dilation[0]
+        output_length = []
+        for i, length in enumerate(valid_lengths):
+            output_length.append((length - 1) * stride - 2 * padding + (kernel_size - 1) * dilation + op.output_padding[0] + 1)
+            x[i, :, output_length[i]:] = 0
+    else:
+        return x, valid_lengths
+    return x, output_length
+
